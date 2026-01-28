@@ -1,3 +1,4 @@
+const e = require('express');
 const exspress = require('express');
 
 const app = exspress();
@@ -31,6 +32,13 @@ app.get('/deltagere2', async (req, res) => {
 
     res.send(html);
 });
+
+app.get('/deltagere-json', async (req, res) => {
+    const result = await pool.query('SELECT * FROM users');
+    res.json(result.rows);
+});
+
+app.use(exspress.static('public'));
 
 
 app.listen(3000, () => {
