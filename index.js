@@ -4,6 +4,7 @@ const exspress = require('express');
 const app = exspress();
 
 const {  Pool } = require('pg');
+const fs = require('fs');
 
 const pool = new Pool({
     user: 'postgres',
@@ -13,34 +14,26 @@ const pool = new Pool({
     port: 5432,
 });
 
-app.get(
-    '/', (req, res) => {
-        res.json({ message: 'Hello, World!' });
-});
 
-app.get('/deltagere2', async (req, res) => {
-
-    const result = await pool.query('SELECT * FROM users');
-
-    let html = '<h1>List of Users</h1><ul>';
-    html += "<ul>"
-
-    for( const row of result.rows ) {
-        html += `<li>${row.name}</li>`;
-    }
-    html += "</ul>";
-
-    res.send(html);
-});
 
 app.get('/deltagere-json', async (req, res) => {
     const result = await pool.query('SELECT * FROM users');
     res.json(result.rows);
 });
 
+app.get('/bilmer-json', async (req, res) => {
+    fs.readFile('bilmerker.json', 'utf8', (err, data) => {
+        if (err) {
+            res.status(500).json({ error: 'Failed to read bilmerker.json' });
+            return;
+        }
+        res.json(JSON.parse(data));
+    });
+});
+
 app.use(exspress.static('public'));
 
 
 app.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
+    console.log('Server is running on http://localhost:' + 3000);
 });
