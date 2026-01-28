@@ -13,12 +13,23 @@ const pool = new Pool({
     password: 'mysecretpassword',
     port: 5432,
 });
-
-
+app.use(exspress.json());
 
 app.get('/deltagere-json', async (req, res) => {
     const result = await pool.query('SELECT * FROM users');
     res.json(result.rows);
+});
+
+// Add new user (POST)
+app.post('/deltagere-json', async (req, res) => {
+    const data = req.body;
+    console.log('Received data:', data);
+    const query = 'INSERT INTO users (name) VALUES ($1)';
+    const values = [data.name];
+    await pool.query(query, values);
+    console.log('User added ', data);
+    res.send('User added');
+
 });
 
 app.get('/bilmer-json', async (req, res) => {
@@ -30,6 +41,7 @@ app.get('/bilmer-json', async (req, res) => {
         res.json(JSON.parse(data));
     });
 });
+
 
 app.use(exspress.static('public'));
 
