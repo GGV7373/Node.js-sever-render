@@ -20,6 +20,11 @@ app.get('/deltagere-json', async (req, res) => {
     res.json(result.rows);
 });
 
+app.get('/skuespillere-json', async (req, res) => {
+    const result = await pool.query('SELECT * FROM skuespillere');
+    res.json(result.rows);
+});
+
 // Add new user (POST)
 app.post('/deltagere-json', async (req, res) => {
     const data = req.body;
@@ -30,6 +35,16 @@ app.post('/deltagere-json', async (req, res) => {
     console.log('User added ', data);
     res.send('User added');
 
+});
+
+app.post('/skuespillere-json', async (req, res) => {
+    const data = req.body;
+    console.log('Received data:', data);
+    const query = 'INSERT INTO skuespillere (name) VALUES ($1)';
+    const values = [data.name];
+    await pool.query(query, values);
+    console.log('Skuespiller added ', data);
+    res.send('Skuespiller added');
 });
 
 app.get('/bilmer-json', async (req, res) => {

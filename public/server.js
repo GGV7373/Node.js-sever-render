@@ -63,4 +63,38 @@ async function sendData(userName) {
     } else {
         alert('Failed to add user');
     }
+};
+
+async function sendSkuespillerData(skuespillerName) {
+    const data = { name: skuespillerName };
+    const response = await fetch('/skuespillere-json', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+    if (response.ok) {
+        // Refresh the skuespillere list after adding
+        fetch('/skuespillere-json')
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById('skuespillere');
+                list.innerHTML = '';
+                data.forEach(skuespiller => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = skuespiller.name;
+                    list.appendChild(listItem);
+                });
+            });
+        document.getElementById('skuespiller-name').value = '';
+    } else {
+        alert('Failed to add skuespiller');
+    }
 }
+
+// Add event listener for 'Add Skuespiller' button
+document.getElementById('add-skuespiller').addEventListener('click', async () => {
+    const skuespillerName = document.getElementById('skuespiller-name').value;
+    await sendSkuespillerData(skuespillerName);
+});
