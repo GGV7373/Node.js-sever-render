@@ -1,4 +1,4 @@
--- Active: 1772011816664@@localhost@5432@postgres@public
+-- Active: 1772011816664@@localhost@5432@postgres
 -- Active: 1772011816664@@localhost@5432@postgres
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -14,3 +14,11 @@ INSERT INTO users (name) VALUES
     ('Alice'),
     ('Bob'),
     ('Charlie');
+
+INSERT INTO skuespillere (name) VALUES 
+    ('Johny Depp'),
+    ('Christian Bale'),
+    ('Scarlett Johansson');
+
+DROP TABLE IF EXISTS skuespillere;
+DROP TABLE IF EXISTS users;

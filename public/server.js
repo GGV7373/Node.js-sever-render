@@ -1,3 +1,18 @@
+// Fetch skuespillere list on page load
+fetch('/skuespillere-json')
+    .then(response => response.json())
+    .then(data => {
+        const list = document.getElementById('skuespillere');
+        list.innerHTML = '';
+        data.forEach(skuespiller => {
+            const listItem = document.createElement('li');
+            listItem.textContent = skuespiller.name;
+            list.appendChild(listItem);
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching skuespillere:', error);
+    });
 fetch('/deltagere-json')
             .then(response => response.json())
             .then(data => {
@@ -30,7 +45,11 @@ fetch('/bilmer-json')
 
 function getUsername() {
     return document.getElementById('name').value;
-}
+};
+
+function getSkuespillerName() {
+    return document.getElementById('skuespiller-name').value;
+};
 
 document.getElementById('add').addEventListener('click', async () => {
     const userName = getUsername();
