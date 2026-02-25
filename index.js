@@ -20,11 +20,17 @@ app.get('/deltagere-json', async (req, res) => {
     res.json(result.rows);
 });
 
-app.get('/skuespillere-json', async (req, res) => {
-    const result = await pool.query('SELECT * FROM skuespillere');
+app.get('/personer-json', async (req, res) => {
+    const result = await pool.query('SELECT * FROM personer');
     res.json(result.rows);
 });
 
+app.get('/deltagere', async (req, res) => {
+    const result = await pool.query('SELECT * FROM users');
+    res.json(result.rows);
+});
+
+// add to database (POST)
 // Add new user (POST)
 app.post('/deltagere-json', async (req, res) => {
     const data = req.body;
@@ -37,16 +43,21 @@ app.post('/deltagere-json', async (req, res) => {
 
 });
 
-app.post('/skuespillere-json', async (req, res) => {
+// Add new person (POST)
+app.post('/personer-json', async (req, res) => {
     const data = req.body;
     console.log('Received data:', data);
-    const query = 'INSERT INTO skuespillere (name) VALUES ($1)';
+    const query = 'INSERT INTO personer (name) VALUES ($1)';
     const values = [data.name];
     await pool.query(query, values);
-    console.log('Skuespiller added ', data);
-    res.send('Skuespiller added');
+    console.log('Person added ', data);
+    res.send('Person added');
 });
 
+// Remove unused postgrest proxy for skuespillere
+
+
+// statike filer
 app.get('/bilmer-json', async (req, res) => {
     fs.readFile('bilmerker.json', 'utf8', (err, data) => {
         if (err) {

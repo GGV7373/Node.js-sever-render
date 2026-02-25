@@ -1,17 +1,46 @@
-// Fetch skuespillere list on page load
-fetch('/skuespillere-json')
+// Function to fetch and update personer list
+async function hentPersoner() {
+    const response = await fetch('/personer-json');
+    const data = await response.json();
+    const list = document.getElementById('personer');
+    list.innerHTML = '';
+    data.forEach(person => {
+        const listItem = document.createElement('li');
+        listItem.textContent = person.name;
+        list.appendChild(listItem);
+    });
+}
+
+// Add event listener for 'ny-person' button
+document.getElementById('ny-person')
+  .addEventListener('click', async () => {
+      const inputElement = document.getElementById('person-name');
+      const name = inputElement.value;
+      const data = { name: name };
+      await fetch('/personer-json', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+      });
+      inputElement.value = '';
+      await hentPersoner();
+});
+// Fetch personer list on page load
+fetch('/personer-json')
     .then(response => response.json())
     .then(data => {
-        const list = document.getElementById('skuespillere');
+        const list = document.getElementById('personer');
         list.innerHTML = '';
-        data.forEach(skuespiller => {
+        data.forEach(person => {
             const listItem = document.createElement('li');
-            listItem.textContent = skuespiller.name;
+            listItem.textContent = person.name;
             list.appendChild(listItem);
         });
     })
     .catch(error => {
-        console.error('Error fetching skuespillere:', error);
+        console.error('Error fetching personer:', error);
     });
 fetch('/deltagere-json')
             .then(response => response.json())
@@ -84,36 +113,10 @@ async function sendData(userName) {
     }
 };
 
-async function sendSkuespillerData(skuespillerName) {
-    const data = { name: skuespillerName };
-    const response = await fetch('/skuespillere-json', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
-    if (response.ok) {
-        // Refresh the skuespillere list after adding
-        fetch('/skuespillere-json')
-            .then(response => response.json())
-            .then(data => {
-                const list = document.getElementById('skuespillere');
-                list.innerHTML = '';
-                data.forEach(skuespiller => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = skuespiller.name;
-                    list.appendChild(listItem);
-                });
-            });
-        document.getElementById('skuespiller-name').value = '';
-    } else {
-        alert('Failed to add skuespiller');
-    }
-}
+// Remove old skuespiller function
 
-// Add event listener for 'Add Skuespiller' button
-document.getElementById('add-skuespiller').addEventListener('click', async () => {
-    const skuespillerName = document.getElementById('skuespiller-name').value;
-    await sendSkuespillerData(skuespillerName);
-});
+// Remove old add-skuespiller event
+
+
+// Remove unused hentpersoner function
+// ...existing code...
