@@ -58,6 +58,12 @@ ul li:hover {
     background: #d0e2fa;
 }
 
+button {
+    display: block;
+    margin: 0 auto 32px auto;
+}
+
+
 @media (max-width: 700px) {
     main, .container {
         max-width: 98vw;
@@ -92,6 +98,8 @@ ul li:hover {
 }
 .button:hover {
     background: #1b3a5c;
+    border-radius: 0vmax;
+    box-shadow: #222 0px 0px 8px;
 }
 
 .alert {
