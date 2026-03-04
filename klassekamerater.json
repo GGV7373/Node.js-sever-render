@@ -1,0 +1,22 @@
+{
+    "klasse": [
+        {
+            "id": 1,
+            "navn": "Heath",
+            "utanding": "It-utvikler",
+            "aar": 2008
+        },
+        {
+            "id": 2,
+            "navn": "Kevin",
+            "utanding": "It-utvikler",
+            "aar": 2008
+        },
+        {
+            "id": 3,
+            "navn": "Victor",
+            "utanding": "It-drifter",
+            "aar": 2008
+        }
+    ]
+}

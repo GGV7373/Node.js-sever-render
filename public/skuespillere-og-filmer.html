@@ -1,68 +1,22 @@
 <!DOCTYPE html>
 <html lang="no">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skuespillere og Filmer</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body class="actors-page">
-    <!-- Hovedinnholdsbeholder -->
-    <div class="actors-container">
-        <h1>Skuespillere og Filmer</h1>
-        <!-- Innholdet vil bli fylt av JavaScript -->
-        <div id="content" class="loading-text">Laster data...</div>
-    </div>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Skuespillere og Filmer</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body class="actors-page">
+        <!-- Hovedinnholdsbeholder -->
+        <div class="actors-container">
+            <h1>Skuespillere og Filmer</h1>
+            <button>
+                <a href="index.html">Tilbake til index</a>
+            </button>
+            <!-- Innholdet vil bli fylt av JavaScript -->
+            <div id="content" class="loading-text">Laster data...</div>
+        </div>
 
-    <script>
-        /**
-         * Hent skuespillere og filmdata fra API-endepunktet
-         * Grupperer dataene etter skuespillernavn og gjengivelser formatert HTML
-         */
-        fetch('/skuespillere-og-filmer-json')
-            .then(response => response.json())
-            .then(data => {
-                // Grupperer data etter skuespillernavn
-                const actorMap = {};
-                
-                // Bygger et kart over skuespillere til deres filmer
-                data.forEach(row => {
-                    // Opprett en ny skuespiller-oppføring hvis den ikke finnes
-                    if (!actorMap[row.navn]) {
-                        actorMap[row.navn] = [];
-                    }
-                    // Legg til film i denne skuespillerens liste
-                    actorMap[row.navn].push(row.tittel);
-                });
-
-                // Opprett HTML-utgang fra de grupperte dataene
-                let html = '';
-                
-                // Gjennomgår skuespillere i alfabetisk rekkefølge
-                Object.keys(actorMap).sort().forEach(actorName => {
-                    // Opprett skuespillerkort
-                    html += `<div class="actor">
-                        <div class="actor-name">${actorName}</div>
-                        <ul class="movies">`;
-                    
-                    // Legg til alle filmer for denne skuespilleren i alfabetisk rekkefølge
-                    actorMap[actorName].sort().forEach(movieTitle => {
-                        html += `<li>${movieTitle}</li>`;
-                    });
-                    
-                    // Lukk skuespillerkort
-                    html += `</ul>
-                    </div>`;
-                });
-
-                // Sett inn den genererte HTML-en på siden
-                document.getElementById('content').innerHTML = html;
-            })
-            .catch(error => {
-                // Håndter eventuelle feil som oppstår under henting
-                console.error('Feil ved lasting av data:', error);
-                document.getElementById('content').innerHTML = '<p class="error-text">Feil ved lasting av data</p>';
-            });
-    </script>
-</body>
+        <script src="server.js"></script>
+    </body>
 </html>

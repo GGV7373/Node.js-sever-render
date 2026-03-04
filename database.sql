@@ -1,4 +1,4 @@
--- Active: 1772011816664@@localhost@5432@mydb
+-- Active: 1772011816664@@localhost@5432
 -- ==================== DATABASESKJEMA FOR NODE.JS SERVERSIDE GJENGIVELSESAPP ====================
 -- PostgreSQL databaseskjema med eksempeldata for skuespillere, filmer og deres relasjoner
 -- Active: 1772011816664@@localhost@5432@postgres
@@ -9,7 +9,7 @@
 -- Lagrer informasjon om filmer/kinofilmer
 -- Felter:
 --   - id: Unik identifikator (Serial/Auto-increment, Primærnøkkel)
---   - tittel: Filmtittel (VARCHAR, max 100 tegn, kan ikke være null)
+--   - tittel: Filmtittel (VARCHAR, max 100 tegn, kan ikke være null)  
 CREATE TABLE filmer (
     id SERIAL PRIMARY KEY,
     tittel VARCHAR(100) NOT NULL
@@ -59,7 +59,6 @@ INSERT INTO skuespillere (navn) VALUES
 -- Forbinde skuespillere med filmer
 -- Dette skaper mange-til-mange forholdene
 -- Format: (skuespiller_id, film_id)
--- Alle tre skuespillere vises i alle tre filmene i dette eksempelet
 INSERT INTO skuespiller_i_film (skuespiller_id, film_id) VALUES
     (1, 1),  -- Keanu Reeves i The Matrix
     (1, 2),  -- Keanu Reeves i The Matrix Reloaded
@@ -70,3 +69,31 @@ INSERT INTO skuespiller_i_film (skuespiller_id, film_id) VALUES
     (3, 1),  -- Carrie-Anne Moss i The Matrix
     (3, 2),  -- Carrie-Anne Moss i The Matrix Reloaded
     (3, 3);  -- Carrie-Anne Moss i The Matrix Revolutions
+
+-- ==================== DELTAKERE, PERSONER OG BRUKERE TABELLER ====================
+
+-- Deltakertabell (Deltakere)
+-- Lagrer informasjon om deltakere
+CREATE TABLE deltakere (
+    id SERIAL PRIMARY KEY,
+    navn VARCHAR(100) NOT NULL
+);
+
+-- Persontabell (Personer)
+-- Lagrer informasjon om personer
+CREATE TABLE personer (
+    id SERIAL PRIMARY KEY,
+    navn VARCHAR(100) NOT NULL
+);
+
+-- Brukertabell (Brukere)
+-- Lagrer informasjon om brukere
+CREATE TABLE brukere (
+    id SERIAL PRIMARY KEY,
+    navn VARCHAR(100) NOT NULL
+);
+
+INSERT INTO deltakere (navn) VALUES
+    ('Roger'),
+    ('Alice'),
+    ('Bob');

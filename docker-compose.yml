@@ -1,12 +1,14 @@
 services:
   postgres:
-    image: postgres
+    image: postgres:17
     container_name: postgres
     ports:
       - "5432:5432"
     environment:
       POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: mydb   # Add this line to create 'mydb' at startup
+      POSTGRES_DB: mydb
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
 
   postgrest:
     image: postgrest/postgrest
@@ -14,7 +16,10 @@ services:
     ports:
       - "3002:3000"
     environment:
-      PGRST_DB_URI: postgres://postgres:mysecretpassword@postgres:5432/mydb   # Update to use 'mydb'
+      PGRST_DB_URI: postgres://postgres:mysecretpassword@postgres:5432/mydb
       PGRST_DB_ANON_ROLE: postgres
     depends_on:
       - postgres
+
+volumes:
+  postgres_data:
