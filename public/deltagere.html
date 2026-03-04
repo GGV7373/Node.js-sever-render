@@ -1,46 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="no">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Test</title>
+        <title>Deltaker- og Personerstyring</title>
         <link rel="stylesheet" href="styles.css">
     </head>
     
 
     <body>
-        <h1>There you are</h1>
+        <h1>Deltaker- og Personerstyring</h1>
+        <!-- Navigasjonsknapp tilbake til startsiden -->
         <button>
             <a href="index.html">
-                Go to Index
+                Gå til Hjem
             </a>
         </button>
 
-        <h2>deltakere list</h2>
+        <!-- Deltakerseksjon - viser alle registrerte deltakere -->
+        <h2>Deltakerliste</h2>
         <ul id="deltakere">
-            <li>Henter data..</li>
+            <li>Laster data...</li>
         </ul>
         
+        <!-- Formular for å legge til ny deltaker -->
         <p>
-            <input id="name" type="text" placeholder="Enter your name" >
-            <button id="add">Add</button>
+            <input id="name" type="text" placeholder="Skriv inn ditt navn" >
+            <button id="add">Legg til Deltaker</button>
         </p>
         
+        <!-- Persons-seksjon - egen liste over personer -->
         <h2>Personer</h2>
         <ul id="personer">
-            <li>Henter data..</li>
+            <li>Laster data...</li>
         </ul>
 
+        <!-- Formular for å legge til ny person -->
         <p>
-            <input id="person-name" type="text" placeholder="Enter person name" >
-            <button id="ny-person">Add Person</button>
+            <input id="person-name" type="text" placeholder="Skriv inn personnavn" >
+            <button id="ny-person">Legg til Person</button>
         </p>
 
+        <!-- Reservert seksjon for brukere (for tiden ikke i bruk) -->
         <h2>Brukere</h2>
         <ul id="brukere">
-            <li>Henter data..</li>
+            <li>Laster data...</li>
         </ul>
 
     </body>
+    <!-- Laster klientside JavaScript for å håndtere datahenting og skjemainnsendinger -->
     <script src="server.js"></script>
 </html>

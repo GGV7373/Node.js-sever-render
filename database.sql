@@ -1,24 +1,72 @@
+-- Active: 1772011816664@@localhost@5432@mydb
+-- ==================== DATABASESKJEMA FOR NODE.JS SERVERSIDE GJENGIVELSESAPP ====================
+-- PostgreSQL databaseskjema med eksempeldata for skuespillere, filmer og deres relasjoner
 -- Active: 1772011816664@@localhost@5432@postgres
--- Active: 1772011816664@@localhost@5432@postgres
-CREATE TABLE users (
+
+-- ==================== TABELLER ====================
+
+-- Filmtabell (Filmer)
+-- Lagrer informasjon om filmer/kinofilmer
+-- Felter:
+--   - id: Unik identifikator (Serial/Auto-increment, Primærnøkkel)
+--   - tittel: Filmtittel (VARCHAR, max 100 tegn, kan ikke være null)
+CREATE TABLE filmer (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+    tittel VARCHAR(100) NOT NULL
 );
 
-CREATE Table skuespillere (
+-- Skuespillertabell (Skuespillere)
+-- Lagrer informasjon om skuespillere
+-- Felter:
+--   - id: Unik identifikator (Serial/Auto-increment, Primærnøkkel)
+--   - navn: Skuespillernavn (VARCHAR, max 100 tegn, kan ikke være null)
+CREATE TABLE skuespillere (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+    navn VARCHAR(100) NOT NULL
 );
 
-INSERT INTO users (name) VALUES 
-    ('Alice'),
-    ('Bob'),
-    ('Charlie');
+-- Junksjonstabell: Skuespillere i Filmer (Skuespiller_i_Film)
+-- Forbinder skuespillere til filmer i en mange-til-mange forhold
+-- En skuespiller kan vises i flere filmer, og en film kan ha flere skuespillere
+-- Felter:
+--   - id: Unik identifikator (Serial/Auto-increment, Primærnøkkel)
+--   - skuespiller_id: Utenlandsk nøkkelreferanse til skuespiller-tabellen
+--   - film_id: Utenlandsk nøkkelreferanse til filmer-tabellen
+CREATE TABLE skuespiller_i_film (
+    id SERIAL PRIMARY KEY,
+    skuespiller_id INT NOT NULL,
+    film_id INT NOT NULL,
+    FOREIGN KEY (skuespiller_id) REFERENCES skuespillere(id),
+    FOREIGN KEY (film_id) REFERENCES filmer(id)
+);
 
-INSERT INTO skuespillere (name) VALUES 
-    ('Johny Depp'),
-    ('Christian Bale'),
-    ('Scarlett Johansson');
+-- ==================== EKSEMPELDATA ====================
 
-DROP TABLE IF EXISTS skuespillere;
-DROP TABLE IF EXISTS users;
+-- Sett inn eksempelfilmer fra The Matrix-trilogien
+-- Disse er klassiske sci-fi-filmer med bemerkelsesverdige skuespillere
+INSERT INTO filmer (tittel) VALUES
+    ('The Matrix'),
+    ('The Matrix Reloaded'),
+    ('The Matrix Revolutions');
+
+-- Sett inn eksempelskuespillere fra The Matrix-trilogien
+-- Disse kjente skuespillerne vises i filmene
+INSERT INTO skuespillere (navn) VALUES
+    ('Keanu Reeves'),
+    ('Laurence Fishburne'),
+    ('Carrie-Anne Moss');
+
+-- Forbinde skuespillere med filmer
+-- Dette skaper mange-til-mange forholdene
+-- Format: (skuespiller_id, film_id)
+-- Alle tre skuespillere vises i alle tre filmene i dette eksempelet
+INSERT INTO skuespiller_i_film (skuespiller_id, film_id) VALUES
+    (1, 1),  -- Keanu Reeves i The Matrix
+    (1, 2),  -- Keanu Reeves i The Matrix Reloaded
+    (1, 3),  -- Keanu Reeves i The Matrix Revolutions
+    (2, 1),  -- Laurence Fishburne i The Matrix
+    (2, 2),  -- Laurence Fishburne i The Matrix Reloaded
+    (2, 3),  -- Laurence Fishburne i The Matrix Revolutions
+    (3, 1),  -- Carrie-Anne Moss i The Matrix
+    (3, 2),  -- Carrie-Anne Moss i The Matrix Reloaded
+    (3, 3);  -- Carrie-Anne Moss i The Matrix Revolutions
