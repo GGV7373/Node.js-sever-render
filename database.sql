@@ -1,4 +1,4 @@
--- Active: 1772011816664@@localhost@5432
+-- Active: 1772011816664@@localhost@5432@mydb
 -- ==================== DATABASESKJEMA FOR NODE.JS SERVERSIDE GJENGIVELSESAPP ====================
 -- PostgreSQL databaseskjema med eksempeldata for skuespillere, filmer og deres relasjoner
 -- Active: 1772011816664@@localhost@5432@postgres
@@ -97,3 +97,19 @@ INSERT INTO deltakere (navn) VALUES
     ('Roger'),
     ('Alice'),
     ('Bob');
+
+-- ==================== BILMERKER TABELL ====================
+
+-- Bilmerketabell (Bilmerker)
+-- Lagrer informasjon om bilmerker
+CREATE TABLE bilmerker (
+    id SERIAL PRIMARY KEY,
+    merke VARCHAR(100) NOT NULL
+);
+
+INSERT INTO bilmerker (merke) VALUES
+    ('Toyota'),
+    ('Honda'),
+    ('Ford'),
+    ('Tesla'),
+    ('BMW');

@@ -2,24 +2,37 @@
 const express = require('express');
 const { Pool } = require('pg');  // PostgreSQL tilkoblingspool
 const fs = require('fs');         // Filsystemmodul
+require('dotenv').config();       // Last miljøvariabler fra .env-fil
 
 // Initialiser Express-applikasjon
 const app = express();
 
 // Konfigurer PostgreSQL-databasetilkoblingskpool
-// Merk: I produksjon, flytt disse legitimasjonene til miljøvariabler (.env-fil)
+// Legitimasjonene hentes fra miljøvariabler (.env-fil) med fallback-verdier
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'mydb',
-    password: 'mysecretpassword',
-    port: 5432,
+    user: process.env.DB_USER || 'postgres',
+    host: process.env.DB_HOST || 'localhost',
+    database: process.env.DB_NAME || 'mydb',
+    password: process.env.DB_PASSWORD || 'mysecretpassword',
+    port: process.env.DB_PORT || 5432,
 });
 
 // Middleware for å analysere innkommende JSON-forespørsler
 app.use(express.json());
 
 // ==================== DELTAKER (DELTAGERE) ENDEPUNKTER ====================
+
+// HENT: Vis en hardkodet HTML-liste over klassekamerater
+app.get('/deltagere-1', (req, res) => {
+    res.send(`
+        <h1>Deltagere</h1>
+        <ul>
+            <li>Heath</li>
+            <li>Kevin</li>
+            <li>Victor</li>
+        </ul>
+    `);
+});
 
 // HENT alle deltakere som JSON
 app.get('/deltagere-json', async (req, res) => {
@@ -70,15 +83,18 @@ app.get('/deltagere', async (req, res) => {
 // POST: Legg til ny deltaker i databasen
 app.post('/deltagere-json', async (req, res) => {
     const data = req.body;
+    if (!data.navn || !data.navn.trim()) {
+        return res.status(400).json({ error: 'Navn er påkrevd' });
+    }
     console.log('Mottatt deltakerdata:', data);
-    
+
     try {
         // Sett inn den nye deltakeren i deltaker-tabellen
         const query = 'INSERT INTO deltakere (navn) VALUES ($1)';
-        const values = [data.navn];
+        const values = [data.navn.trim()];
         await pool.query(query, values);
         console.log('Deltaker lagt til vellykket:', data);
-        res.send('Deltaker lagt til');
+        res.json({ message: 'Deltaker lagt til' });
     } catch (err) {
         console.error('Databasefeil:', err);
         res.status(500).json({ error: 'Databasefeil' });
@@ -88,15 +104,18 @@ app.post('/deltagere-json', async (req, res) => {
 // POST: Legg til ny person i databasen
 app.post('/personer-json', async (req, res) => {
     const data = req.body;
+    if (!data.navn || !data.navn.trim()) {
+        return res.status(400).json({ error: 'Navn er påkrevd' });
+    }
     console.log('Mottatt persondata:', data);
-    
+
     try {
         // Sett inn den nye personen i personer-tabellen
         const query = 'INSERT INTO personer (navn) VALUES ($1)';
-        const values = [data.navn];
+        const values = [data.navn.trim()];
         await pool.query(query, values);
         console.log('Person lagt til vellykket:', data);
-        res.send('Person lagt til');
+        res.json({ message: 'Person lagt til' });
     } catch (err) {
         console.error('Databasefeil:', err);
         res.status(500).json({ error: 'Databasefeil' });
@@ -106,15 +125,18 @@ app.post('/personer-json', async (req, res) => {
 // POST: Legg til ny bruker i databasen
 app.post('/brukere-json', async (req, res) => {
     const data = req.body;
+    if (!data.navn || !data.navn.trim()) {
+        return res.status(400).json({ error: 'Navn er påkrevd' });
+    }
     console.log('Mottatt brukerdata:', data);
-    
+
     try {
         // Sett inn den nye brukeren i brukere-tabellen
         const query = 'INSERT INTO brukere (navn) VALUES ($1)';
-        const values = [data.navn];
+        const values = [data.navn.trim()];
         await pool.query(query, values);
         console.log('Bruker lagt til vellykket:', data);
-        res.send('Bruker lagt til');
+        res.json({ message: 'Bruker lagt til' });
     } catch (err) {
         console.error('Databasefeil:', err);
         res.status(500).json({ error: 'Databasefeil' });
@@ -187,37 +209,74 @@ app.get('/skuespillere-og-filmer', async (req, res) => {
 
 // ==================== BILMERKER ENDEPUNKT ====================
 
-// HENT: Hent alle bilmerker fra bilmerker.json-filen
-app.get('/bilmer-json', async (req, res) => {
-    fs.readFile('bilmerker.json', 'utf8', (err, data) => {
-        if (err) {
-            // Returner feil hvis filen ikke kan leses
-            res.status(500).json({ error: 'Kunne ikke lese bilmerker.json' });
-            return;
-        }
-        try {
-            res.json(JSON.parse(data));
-        } catch (parseErr) {
-            console.error('JSON-parsefeil i bilmerker.json:', parseErr);
-            res.status(500).json({ error: 'Ugyldig JSON i bilmerker.json' });
-        }
-    });
+// HENT: Hent alle bilmerker fra databasen som JSON
+app.get('/bilmerker-json', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM bilmerker');
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Databasefeil:', err);
+        res.status(500).json({ error: 'Databasefeil' });
+    }
+});
+
+// HENT: Hent alle bilmerker fra databasen som HTML
+app.get('/bilmerker', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM bilmerker');
+        let html = '<h1>Bilmerker</h1><ul>';
+        result.rows.forEach(row => {
+            html += `<li>${row.merke}</li>`;
+        });
+        html += '</ul>';
+        res.send(html);
+    } catch (err) {
+        console.error('Databasefeil:', err);
+        res.status(500).send('Databasefeil');
+    }
+});
+
+// ==================== SKUESPILLERE ENDEPUNKTER ====================
+
+// HENT: Hent alle skuespillere som JSON
+app.get('/skuespillere-json', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM skuespillere');
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Databasefeil:', err);
+        res.status(500).json({ error: 'Databasefeil' });
+    }
+});
+
+// POST: Legg til ny skuespiller i databasen
+app.post('/skuespillere-json', async (req, res) => {
+    const data = req.body;
+    if (!data.navn || !data.navn.trim()) {
+        return res.status(400).json({ error: 'Navn er påkrevd' });
+    }
+    console.log('Mottatt skuespillerdata:', data);
+
+    try {
+        const query = 'INSERT INTO skuespillere (navn) VALUES ($1)';
+        const values = [data.navn.trim()];
+        await pool.query(query, values);
+        console.log('Skuespiller lagt til vellykket:', data);
+        res.json({ message: 'Skuespiller lagt til' });
+    } catch (err) {
+        console.error('Databasefeil:', err);
+        res.status(500).json({ error: 'Databasefeil' });
+    }
 });
 
 app.get('/klassekamerater-json', async (req, res) => {
-    fs.readFile('klassekamerater.json', 'utf8', (err, data) => {
-        if (err) {
-            // Returner feil hvis filen ikke kan leses
-            res.status(500).json({ error: 'Kunne ikke lese klassekamerater.json' });
-            return;
-        }
-        try {
-            res.json(JSON.parse(data));
-        } catch (parseErr) {
-            console.error('JSON-parsefeil i klassekamerater.json:', parseErr);
-            res.status(500).json({ error: 'Ugyldig JSON i klassekamerater.json' });
-        }
-    });
+    try {
+        const data = await fs.promises.readFile('klassekamerater.json', 'utf8');
+        res.json(JSON.parse(data));
+    } catch (err) {
+        console.error('Feil ved lesing av klassekamerater.json:', err);
+        res.status(500).json({ error: 'Kunne ikke lese klassekamerater.json' });
+    }
 });
 // ==================== MIDDLEWARE ====================
 

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="no">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Skuespillere</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+
+    <body>
+        <h1>Skuespillere</h1>
+        <a href="index.html" class="button">Gå til Hjem</a>
+
+        <h2>Skuespillerliste</h2>
+        <ul id="skuespillere">
+            <li>Laster data...</li>
+        </ul>
+
+        <p>
+            <input id="skuespiller-navn" type="text" placeholder="Skriv inn skuespillernavn">
+            <button id="legg-til-skuespiller">Legg til Skuespiller</button>
+        </p>
+
+        <script>
+            async function hentSkuespillere() {
+                const response = await fetch('/skuespillere-json');
+                const data = await response.json();
+                const list = document.getElementById('skuespillere');
+                list.innerHTML = '';
+
+                data.forEach(skuespiller => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = skuespiller.navn;
+                    list.appendChild(listItem);
+                });
+            }
+
+            hentSkuespillere();
+
+            document.getElementById('legg-til-skuespiller').addEventListener('click', async () => {
+                const inputElement = document.getElementById('skuespiller-navn');
+                const navn = inputElement.value.trim();
+                if (!navn) return;
+                const data = { navn: navn };
+
+                await fetch('/skuespillere-json', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                inputElement.value = '';
+                await hentSkuespillere();
+            });
+        </script>
+    </body>
+</html>

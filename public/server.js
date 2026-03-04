@@ -29,7 +29,8 @@ const nyPersonBtn = document.getElementById('ny-person');
 if (nyPersonBtn) {
     nyPersonBtn.addEventListener('click', async () => {
         const inputElement = document.getElementById('person-name');
-        const name = inputElement.value;
+        const name = inputElement.value.trim();
+        if (!name) return;
         const data = { navn: name };
 
         // Send POST-forespørsel for å legge til ny person
@@ -54,21 +55,7 @@ if (nyPersonBtn) {
  */
 const personerList = document.getElementById('personer');
 if (personerList) {
-    fetch('/personer-json')
-        .then(response => response.json())
-        .then(data => {
-            personerList.innerHTML = '';  // Fjern lastingsmelding
-
-            // Opprett listeelement for hver person
-            data.forEach(person => {
-                const listItem = document.createElement('li');
-                listItem.textContent = person.navn;
-                personerList.appendChild(listItem);
-            });
-        })
-        .catch(error => {
-            console.error('Feil ved henting av personer:', error);
-        });
+    hentPersoner();
 }
 
 /**
@@ -120,15 +107,15 @@ if (brukerList) {
  */
 const bilmerkerList = document.getElementById('bilmerker');
 if (bilmerkerList) {
-    fetch('/bilmer-json')
+    fetch('/bilmerker-json')
         .then(response => response.json())
         .then(data => {
             bilmerkerList.innerHTML = '';  // Fjern lastingsmelding
 
-            // Opprett listeelement for hvert bilmerke (make + model)
-            data.cars.forEach(bilmerke => {
+            // Opprett listeelement for hvert bilmerke
+            data.forEach(bilmerke => {
                 const listItem = document.createElement('li');
-                listItem.textContent = bilmerke.make + ' ' + bilmerke.model;
+                listItem.textContent = bilmerke.merke;
                 bilmerkerList.appendChild(listItem);
             });
         })
@@ -174,7 +161,8 @@ function getUsername() {
 const addBtn = document.getElementById('add');
 if (addBtn) {
     addBtn.addEventListener('click', async () => {
-        const userName = getUsername();
+        const userName = getUsername().trim();
+        if (!userName) return;
         await sendData(userName);
     });
 }

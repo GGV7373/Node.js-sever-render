@@ -10,19 +10,13 @@
     <body>
         <!-- Velkomstheader -->
         <h1>Velkommen til Node.js Hjem</h1>
-        <p>En test med Express.js-applikasjon med PostgreSQL-databadse</p>
+        <p>En test med Express.js-applikasjon med PostgreSQL-database</p>
         
-        <!-- Navigasjonsknapp til deltakerstyring-siden -->
-        <button>
-            <a href="deltagere.html">
-                Gå til Deltakerstyring
-            </a>
-        </button>
-        <button>
-            <a href="skuespillere-og-filmer.html">
-                Gå til Skuespillere og Filmer
-            </a>
-        </button>
+        <!-- Navigasjonsknapper -->
+        <a href="deltagere.html" class="button">Gå til Deltakerstyring</a>
+        <a href="skuespillere.html" class="button">Gå til Skuespillere</a>
+        <a href="skuespillere-og-filmer.html" class="button">Gå til Skuespillere og Filmer</a>
+        <a href="postgrest.html" class="button">Gå til PostgREST (Skuespillere og Filmer)</a>
         
 
         <!-- Bilmerker-seksjon - henter data fra bilmerker.json -->
@@ -36,7 +30,7 @@
             <li>Laster klassekamerater...</li>
         </ul>  
 
+        <!-- Laster klientside JavaScript for datahenting -->
+        <script src="server.js"></script>
     </body>
-    <!-- Laster klientside JavaScript for datahenting -->
-    <script src="server.js"></script>
 </html>

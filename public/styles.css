@@ -243,6 +243,11 @@ body.actors-page h1 {
     font-size: 1em;
     cursor: pointer;
     transition: background 0.2s;
+    display: block;
+    margin: 0 auto 32px auto;
+    text-decoration: none;
+    text-align: center;
+    width: fit-content;
 }
 
 /**
