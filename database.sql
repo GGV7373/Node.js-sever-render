@@ -113,3 +113,14 @@ INSERT INTO bilmerker (merke) VALUES
     ('Ford'),
     ('Tesla'),
     ('BMW');
+
+INSERT INTO brukere (navn) VALUES
+    ('Charlie'),
+    ('Dave'),
+    ('Eve');
+
+INSERT INTO personer (navn) VALUES
+    ('Frank'),
+    ('Grace'),
+    ('Heidi');
+    

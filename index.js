@@ -20,6 +20,9 @@ const pool = new Pool({
 // Middleware for å analysere innkommende JSON-forespørsler
 app.use(express.json());
 
+const PORT = Number(process.env.PORT) || 3000;
+const serveFrontend = process.env.SERVE_FRONTEND !== 'false';
+
 // ==================== DELTAKER (DELTAGERE) ENDEPUNKTER ====================
 
 // HENT: Vis en hardkodet HTML-liste over klassekamerater
@@ -209,14 +212,38 @@ app.get('/skuespillere-og-filmer', async (req, res) => {
 
 // ==================== BILMERKER ENDEPUNKT ====================
 
+async function hentBilmerkerFraFil() {
+    const fileContent = await fs.promises.readFile('bilmerker.json', 'utf8');
+    const parsed = JSON.parse(fileContent);
+
+    if (Array.isArray(parsed)) {
+        return parsed;
+    }
+
+    if (Array.isArray(parsed.cars)) {
+        return parsed.cars.map((car, index) => ({
+            id: car.id || index + 1,
+            merke: car.merke || car.make || 'Ukjent bilmerke'
+        }));
+    }
+
+    return [];
+}
+
 // HENT: Hent alle bilmerker fra databasen som JSON
 app.get('/bilmerker-json', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM bilmerker');
         res.json(result.rows);
     } catch (err) {
-        console.error('Databasefeil:', err);
-        res.status(500).json({ error: 'Databasefeil' });
+        console.error('Databasefeil ved henting av bilmerker. Forsoker fallback til fil:', err.message);
+        try {
+            const bilmerkerFraFil = await hentBilmerkerFraFil();
+            res.json(bilmerkerFraFil);
+        } catch (fileErr) {
+            console.error('Feil ved lesing av bilmerker.json:', fileErr);
+            res.status(500).json({ error: 'Kunne ikke hente bilmerker' });
+        }
     }
 });
 
@@ -231,8 +258,19 @@ app.get('/bilmerker', async (req, res) => {
         html += '</ul>';
         res.send(html);
     } catch (err) {
-        console.error('Databasefeil:', err);
-        res.status(500).send('Databasefeil');
+        console.error('Databasefeil ved henting av bilmerker (HTML). Forsoker fallback til fil:', err.message);
+        try {
+            const bilmerkerFraFil = await hentBilmerkerFraFil();
+            let html = '<h1>Bilmerker</h1><ul>';
+            bilmerkerFraFil.forEach(row => {
+                html += `<li>${row.merke || row.make || 'Ukjent bilmerke'}</li>`;
+            });
+            html += '</ul>';
+            res.send(html);
+        } catch (fileErr) {
+            console.error('Feil ved lesing av bilmerker.json:', fileErr);
+            res.status(500).send('Kunne ikke hente bilmerker');
+        }
     }
 });
 
@@ -282,11 +320,18 @@ app.get('/klassekamerater-json', async (req, res) => {
 
 // Server alle statiske filer fra 'public' mappen
 // Dette inkluderer HTML-filer, CSS, klientside JavaScript og bilder
-app.use(express.static('public'));
+if (serveFrontend) {
+    app.use(express.static('public'));
+}
 
 // ==================== START SERVEREN ====================
 
 // Start Express-serveren på port 3000
-app.listen(3000, () => {
-    console.log('Server kjører på http://localhost:3000');
+app.listen(PORT, () => {
+    console.log(`Live on http://localhost:${PORT}`);
+    if (serveFrontend) {
+        console.log(`Frontend enabled at http://localhost:${PORT}/`);
+    } else {
+        console.log('Frontend disabled (SERVE_FRONTEND=false). API routes only.');
+    }
 });

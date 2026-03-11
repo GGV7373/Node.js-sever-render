@@ -108,19 +108,42 @@ if (brukerList) {
 const bilmerkerList = document.getElementById('bilmerker');
 if (bilmerkerList) {
     fetch('/bilmerker-json')
-        .then(response => response.json())
+        .then(async response => {
+            const payload = await response.json();
+            if (!response.ok) {
+                throw new Error(payload.error || 'Ugyldig svar fra serveren');
+            }
+            return payload;
+        })
         .then(data => {
             bilmerkerList.innerHTML = '';  // Fjern lastingsmelding
 
-            // Opprett listeelement for hvert bilmerke
-            data.forEach(bilmerke => {
+            const bilmerker = Array.isArray(data)
+                ? data
+                : Array.isArray(data.cars)
+                    ? data.cars
+                    : [];
+
+            if (bilmerker.length === 0) {
                 const listItem = document.createElement('li');
-                listItem.textContent = bilmerke.merke;
+                listItem.textContent = 'Ingen bilmerker funnet';
+                bilmerkerList.appendChild(listItem);
+                return;
+            }
+
+            // Opprett listeelement for hvert bilmerke
+            bilmerker.forEach(bilmerke => {
+                const listItem = document.createElement('li');
+                listItem.textContent = bilmerke.merke || bilmerke.make || 'Ukjent bilmerke';
                 bilmerkerList.appendChild(listItem);
             });
         })
         .catch(error => {
             console.error('Feil ved henting av bilmerker:', error);
+            bilmerkerList.innerHTML = '';
+            const listItem = document.createElement('li');
+            listItem.textContent = 'Feil ved henting av bilmerker';
+            bilmerkerList.appendChild(listItem);
         });
 }
 
