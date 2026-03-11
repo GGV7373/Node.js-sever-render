@@ -2,7 +2,7 @@
 
 En moderne Express.js webapplikasjon som demonstrerer serverside gjengivelse med en PostgreSQL-databasebakgrunn. Denne applikasjonen viser dynamisk datahenting, skjemahåndtering og interaktive brukergrensesnitt.
 
-## 📋 Innholdsfortegnelse
+## Innholdsfortegnelse
 - [Funksjonalitet](#funksjonalitet)
 - [Prosjektstruktur](#prosjektstruktur)
 - [Databaseskjema](#databaseskjema)
@@ -11,7 +11,7 @@ En moderne Express.js webapplikasjon som demonstrerer serverside gjengivelse med
 - [Sider](#sider)
 - [Teknologier](#teknologier)
 
-## ✨ Funksjonalitet
+## Funksjonalitet
 
 - **Serverside Gjengivelse**: Dynamisk HTML-generering fra databasespørringer
 - **RESTful API**: JSON-endepunkter for datahenting og manipulering
@@ -20,7 +20,7 @@ En moderne Express.js webapplikasjon som demonstrerer serverside gjengivelse med
 - **Databehandling**: Legg til og hent deltakere, personer, skuespillere og filmer
 - **JSON Data Støtte**: Integrasjon med JSON-filer for ekstra datakilder
 
-## 📁 Prosjektstruktur
+## Prosjektstruktur
 
 ```
 Node.js-sever-render/
@@ -37,7 +37,7 @@ Node.js-sever-render/
 └── README.md                   # Denne filen
 ```
 
-## 🗄️ Databaseskjema
+## Databaseskjema
 
 Applikasjonen bruker PostgreSQL med følgende tabeller:
 
@@ -59,7 +59,7 @@ Applikasjonen bruker PostgreSQL med følgende tabeller:
 - Forbinder skuespillere til filmer (Mange-til-Mange forhold)
 - Felter: `id`, `skuespiller_id` (Utenlandsk nøkkel), `film_id` (Utenlandsk nøkkel)
 
-## 🚀 Kom i Gang
+## Kom i Gang
 
 ### Forutsetninger
 - Node.js (v14 eller høyere)
@@ -95,7 +95,7 @@ npm run dev       # Start med Nodemon (auto-oppdatering ved endringer)
 http://localhost:3000
 ```
 
-## 📡 API-Endepunkter
+## API-Endepunkter
 
 ### Deltakere (Deltagere)
 - `GET /deltagere-json` - Hent alle deltakere
@@ -116,7 +116,7 @@ http://localhost:3000
 ### Statiske Filer
 - Alle filer i `public/` mappen serveres som statiske filer
 
-## 🌐 Sider
+##  Sider
 
 ### Startsiden (`/`)
 - Velkomstsiden med navigasjon til andre seksjoner
@@ -133,7 +133,7 @@ http://localhost:3000
 - Viser alle filmer for hver skuespiller
 - Stylet med moderne kortlayouter
 
-## 💻 Teknologier
+## Teknologier
 
 - **Backend**: Express.js 5.2.1
 - **Database**: PostgreSQL
@@ -141,17 +141,17 @@ http://localhost:3000
 - **Utvikling**: Nodemon 3.1.11
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3
 
-## 📝 Merknader
+## Merknader
 
 - Applikasjonen bruker norske språketiketter for noen funksjoner (skuespillere, filmer)
 - Databaselegitimasjon i `index.js` bør flyttes til miljøvariabler i produksjon
 - Applikasjonen kjører på port 3000 som standard
 - All data er vedvarende i PostgreSQL-databasen
 
-## 📄 Lisens
+## Lisens
 
-ISC-lisens - Se LICENSE-fil for detaljer
+MIT License copyright (c) 2026 GGV7373
 
-## 👥 Forfatter
+## Contributor
 
 GGV7373

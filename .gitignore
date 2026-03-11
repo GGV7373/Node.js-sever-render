@@ -2,8 +2,6 @@
 postgres_data
 #this is the folder for posgres data
 
-# Claude temp files
-tmpclaude-*
 
 # Logs
 logs
